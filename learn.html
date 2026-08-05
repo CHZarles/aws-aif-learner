@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学习路径 · AWS AIF-C01</title>
+<style>
+:root{
+  --bg:#f5f7fa;--panel:#ffffff;--panel2:#fafbfc;--border:#e4e8ee;
+  --border-strong:#cdd3dc;--text:#1f2937;--muted:#6b7280;
+  --accent:#3b82f6;--accent-soft:#dbeafe;--accent2:#8b5cf6;
+  --shadow-sm:rgba(15,23,42,.04);--shadow-md:rgba(15,23,42,.08);
+  --c-eval:#10b981;--c-gen:#f59e0b;--c-app:#f97316;--c-pe:#a855f7;
+  --c-rag:#ef4444;--c-bed:#06b6d4;--c-sm:#22c55e;--c-q:#0ea5e9;
+  --c-sec:#f43f5e;--c-resp:#c084fc;
+}
+[data-theme="dark"]{
+  --bg:#0f172a;--panel:#1e293b;--panel2:#0f172a;--border:#334155;
+  --border-strong:#475569;--text:#f1f5f9;--muted:#94a3b8;
+  --accent:#60a5fa;--accent-soft:#1e3a8a;--accent2:#a78bfa;
+  --shadow-sm:rgba(0,0,0,.3);--shadow-md:rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+     background:var(--bg);color:var(--text);font-size:14px;
+     transition:background .3s,color .3s}
+
+header{padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--border);
+       display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px var(--shadow-sm)}
+.brand{font-weight:600;font-size:15px;display:flex;align-items:center;gap:8px}
+.brand .logo{width:28px;height:28px;border-radius:6px;
+             background:linear-gradient(135deg,#58a6ff,#bc8cff);
+             display:grid;place-items:center;font-size:14px;color:#000}
+nav{margin-left:auto;display:flex;gap:4px;background:var(--panel2);padding:3px;border-radius:8px}
+nav a{background:transparent;color:var(--muted);text-decoration:none;
+      padding:5px 14px;border-radius:6px;font-size:13px}
+nav a.active{background:var(--accent);color:#fff;font-weight:500}
+nav a:hover:not(.active){color:var(--text);background:var(--border)}
+.theme-toggle{margin-left:8px;background:var(--panel2);border:1px solid var(--border);
+              padding:5px 10px;border-radius:6px;cursor:pointer;font-size:14px;color:var(--text)}
+
+main{height:calc(100vh - 53px);overflow-y:auto;padding:24px 18px}
+.learn-wrap{max-width:720px;margin:0 auto;width:100%}
+
+.learn-progress{margin-bottom:24px}
+.progress-bar{height:8px;background:var(--panel2);border-radius:4px;overflow:hidden;
+              border:1px solid var(--border)}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));
+               transition:width .5s;border-radius:4px}
+.progress-text{display:flex;justify-content:space-between;font-size:12px;
+               color:var(--muted);margin-top:8px;font-weight:500}
+.progress-text b{color:var(--accent)}
+
+.learn-card{background:var(--panel);border:1px solid var(--border);border-radius:18px;
+            padding:34px 38px;box-shadow:0 6px 28px var(--shadow-md);
+            position:relative;overflow:hidden;margin-bottom:20px}
+.learn-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;
+                    background:linear-gradient(90deg,var(--accent),var(--accent2))}
+
+.learn-card .step-badge{display:inline-block;background:var(--accent);color:#fff;
+                        padding:5px 14px;border-radius:20px;font-size:12px;
+                        font-weight:700;margin-bottom:14px;letter-spacing:.5px}
+.learn-card h2{margin:0 0 6px;font-size:28px;font-weight:800;color:var(--text);
+               line-height:1.2}
+.learn-card .kp-id{display:inline-block;background:var(--panel2);color:var(--muted);
+                  padding:3px 10px;border-radius:6px;font-size:11px;font-family:monospace;
+                  margin-left:6px;font-weight:500}
+
+.learn-card .def{font-size:17px;line-height:1.75;color:var(--text);
+                 padding:18px 22px;background:var(--accent-soft);
+                 border-left:4px solid var(--accent);border-radius:0 10px 10px 0;
+                 margin:22px 0}
+
+.section-title{font-size:13px;color:var(--muted);margin:26px 0 12px;
+               text-transform:uppercase;letter-spacing:1px;font-weight:700;
+               display:flex;align-items:center;gap:8px}
+.section-title::before{content:'';width:3px;height:14px;background:var(--accent);
+                       border-radius:2px}
+
+.learn-card .points{padding-left:0;list-style:none;margin:0}
+.learn-card .points li{padding:11px 0 11px 30px;position:relative;font-size:14px;
+                       line-height:1.8;color:var(--text);
+                       border-bottom:1px dashed var(--border)}
+.learn-card .points li:last-child{border-bottom:none}
+.learn-card .points li::before{content:'✓';position:absolute;left:0;top:11px;
+                               width:22px;height:22px;background:var(--c-eval);
+                               color:#fff;border-radius:50%;font-size:12px;font-weight:700;
+                               display:grid;place-items:center}
+
+.example-box{background:var(--panel2);border:1px solid var(--border);
+             border-left:4px solid var(--accent2);border-radius:0 8px 8px 0;
+             padding:14px 18px;margin:12px 0;font-size:14px;line-height:1.65;color:var(--text)}
+.example-box b{color:var(--accent2)}
+
+.aws-box{background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.3);
+         border-radius:8px;padding:14px 18px;margin:12px 0;font-size:14px;color:var(--text)}
+.aws-box .label{display:inline-block;background:var(--c-bed);color:#fff;
+               padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;
+               margin-right:8px}
+
+.trap-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.25);
+          border-radius:8px;padding:12px 16px;margin:12px 0;font-size:13px;
+          color:var(--text);line-height:1.6}
+.trap-box::before{content:'⚠️ 易错点：';color:var(--c-rag);font-weight:700}
+
+.tip-box{background:linear-gradient(135deg,rgba(139,92,246,.06),rgba(59,130,246,.06));
+          border:1px solid var(--border);border-radius:10px;padding:14px 18px;
+          font-size:13px;color:var(--muted);line-height:1.65;margin-top:14px}
+.tip-box b{color:var(--accent2)}
+.focus-note{background:var(--accent-soft);color:var(--accent);border:1px solid rgba(59,130,246,.25);
+            border-radius:12px;padding:10px 14px;font-size:13px;font-weight:700;
+            margin-bottom:14px;line-height:1.6}
+
+.compare-box{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.compare-box .item{background:var(--panel2);border:1px solid var(--border);
+                  border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.5}
+.compare-box .item h4{margin:0 0 6px;font-size:12px;color:var(--accent);
+                     font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+
+.learn-nav{display:flex;gap:10px;margin-top:32px;align-items:center}
+.learn-nav button{flex:1;padding:13px 18px;border-radius:10px;font-size:14px;
+                  font-weight:600;cursor:pointer;transition:.15s;border:none}
+.learn-nav .prev{background:var(--panel2);color:var(--text);
+                 border:1px solid var(--border)}
+.learn-nav .next{background:var(--accent);color:#fff}
+.learn-nav .prev:hover:not(:disabled){background:var(--accent-soft);
+                                       color:var(--accent);border-color:var(--accent)}
+.learn-nav .next:hover:not(:disabled){transform:translateY(-1px);
+                                       box-shadow:0 4px 12px var(--shadow-md)}
+.learn-nav button:disabled{opacity:.4;cursor:not-allowed}
+
+.learn-final{text-align:center;padding:80px 20px}
+.learn-final .icon{font-size:80px;margin-bottom:20px}
+.learn-final h2{font-size:32px;margin-bottom:12px}
+.learn-final p{color:var(--muted);margin-bottom:30px;font-size:15px;line-height:1.7}
+.learn-final .btn{display:inline-block;padding:12px 28px;border-radius:10px;
+                  font-weight:600;text-decoration:none;margin:0 6px;
+                  transition:.15s}
+.learn-final .btn-primary{background:var(--accent);color:#fff}
+.learn-final .btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 16px var(--shadow-md)}
+.learn-final .btn-secondary{background:var(--panel2);color:var(--text);border:1px solid var(--border)}
+
+.loading{padding:60px 20px;text-align:center;color:var(--muted)}
+.loading .spin{font-size:36px;margin-bottom:16px;animation:spin 1.2s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="logo">🎓</span>AWS AIF-C01 学习助手</div>
+  <nav>
+    <a href="learn.html" class="active">学习</a>
+    <a href="quiz.html">刷题</a>
+    <a href="graph.html">高级</a>
+  </nav>
+  <button class="theme-toggle" id="theme-toggle">🌙</button>
+</header>
+<main id="main">
+  <div class="loading"><div class="spin">⏳</div><div>加载学习内容...</div></div>
+</main>
+
+<script>
+// 学习路径：14 个核心概念，按认知顺序排列，每个含丰富内容
+const LEARN_PATH = [
+  {
+    title:'机器学习是什么？',
+    kpIds:['KP000','KP001','KP002'],
+    points:[
+      '机器学习 = 让计算机从数据中自动找规律，而不是人写规则',
+      '监督学习：用带答案的数据训练（如：教小孩认水果，告诉它"这是苹果、这是香蕉"）',
+      '无监督学习：让模型自己发现数据中的群组（如：自动给客户分群、新闻聚类）',
+      '强化学习：通过"试错+奖励"学习（如：AlphaGo 下棋赢了加分）',
+      '这是 AI 最大的子集，几乎所有商业 AI 都基于它'
+    ],
+    example:'<b>判断垃圾邮件</b>：用 1000 封已标记"垃圾/正常"的邮件训练模型，模型学会判断新邮件 → 监督学习。<br><b>客户分群</b>：电商把 100万 客户按购买行为自动分成 5 类，无人工标签 → 无监督学习。',
+    aws:'<span class="label">AWS</span>SageMaker Ground Truth 做数据标注；SageMaker Canvas 无代码建模；Comprehend 文本分类',
+    trap:'分不清监督 vs 无监督？看有没有"标准答案标签"！<br>→ 有标签 = 监督；没标签 = 无监督。',
+    tip:'记住一句话：<b>机器学习 = 数据 → 自动找规律 → 预测</b>。所有 AI 应用都建立在这之上。'
+  },
+  {
+    title:'深度学习与现代 AI',
+    kpIds:['KP004','KP039'],
+    points:[
+      '深度学习 = 用多层神经网络（"深度"指层数多）',
+      'Transformer 是当前所有大语言模型的基础架构，2017 年 Google 提出',
+      '它靠<b>自注意力机制</b>理解上下文，颠覆了之前 RNN/LSTM 的顺序处理方式',
+      '深度学习是机器学习的子集，能自动提取特征（不用人工设计）',
+      '训练需要大量数据和算力（GPU）'
+    ],
+    example:'<b>图像识别</b>：第一层学边缘、第二层学纹理、第三层学部件、第四层学整体 → 多层自动提取特征。<br><b>GPT 用 Transformer</b>：自注意力让模型一次看到所有上下文，理解"它"指代什么。',
+    aws:'<span class="label">AWS</span>SageMaker 训练深度学习模型；Trainium / Inferentia 芯片加速；Bedrock 提供预训练 Transformer 模型',
+    trap:'不要混淆"深度学习"和"机器学习"：<br>所有深度学习都是机器学习，但并非所有机器学习都是深度学习（线性回归、决策树就是浅层学习）。',
+    tip:'💡 看到"神经网络"和"深度学习"基本是一回事。Transformer 是 LLM 时代的奠基架构。'
+  },
+  {
+    title:'生成式 AI 是什么？',
+    kpIds:['KP036a','KP049'],
+    points:[
+      '生成式 AI = 能"创造"新内容（文字/图片/代码/视频/音乐）的 AI',
+      '和判别式 AI（只做分类/判断，不创造）相对 — 比如图像分类就是判别式',
+      '核心问题：<b>幻觉</b> — 模型自信地说错的事，编造看似合理的内容',
+      '代表：ChatGPT（文本）、Midjourney（图像）、Amazon Bedrock 上的所有 FM',
+      '核心能力：泛化（一个模型做多任务）vs 传统 AI（一个模型做一个任务）'
+    ],
+    example:'<b>生成式</b>：写邮件、画插图、写代码、做 PPT<br><b>判别式</b>：判断邮件是否垃圾、判断图片里有没有猫',
+    aws:'<span class="label">AWS</span>Amazon Bedrock（FM 平台）、Amazon Q（AI 助手）、PartyRock（实验）',
+    trap:'幻觉是生成式 AI 的<b>最大短板</b>。考试常问：如何减少幻觉？<br>→ 答：RAG、降低温度、防护栏、人机协同',
+    tip:'一句话区分：生成式 = 输出新内容；判别式 = 输出是/否、分类。AWS 考试必考点。'
+  },
+  {
+    title:'大语言模型 LLM 核心',
+    kpIds:['KP037','KP041','KP042','KP050'],
+    points:[
+      'LLM = Large Language Model，在海量文本上预训练的大模型',
+      '<b>Token</b>：模型处理文字的最小单位（可能是词、子词或字符），按 token 计费',
+      '<b>上下文窗口</b>：模型一次能"看"的最大 token 数，超出就"忘记"前文',
+      '<b>温度参数</b>：0 = 确定保守，1 = 发散有创意。考试题爱考"想要更确定 → 调低温度"',
+      '<b>Top-K 采样</b>：每步只从概率最高的 K 个 token 里选（也是控制多样性）',
+      '<b>非确定性</b>：相同输入可能输出不同结果（因采样 + 温度）'
+    ],
+    example:'<b>温度对比</b>：温度=0 → "今天天气真好，适合出门散步"；温度=1 → "今日苍穹湛蓝，邀君共赏万木春色"。',
+    aws:'<span class="label">AWS</span>Bedrock 上的 Claude、Nova、Llama 都是 LLM；按输入输出 token 数计费',
+    trap:'⚠️ 上下文窗口不是"模型能学的知识总量"，是"单次对话能处理的最大长度"！<br>Claude 3.5 是 200K，GPT-4 Turbo 是 128K。',
+    tip:'💰 考试常考：模型调用成本 = 输入 token + 输出 token。温度越低输出越短越省钱（一般情况）。'
+  },
+  {
+    title:'基础模型 FM 与 Bedrock',
+    kpIds:['KP038','KP099'],
+    points:[
+      '基础模型 (FM) = 在超大数据上预训练、可适配多任务的"母模型"',
+      'LLM、多模态模型、扩散模型都是 FM 的特例',
+      '<b>Amazon Bedrock</b> = 托管多家厂商 FM 的无服务器平台（Anthropic Claude、Meta Llama、Amazon Nova、Cohere、Mistral）',
+      'Bedrock 不暴露底层基础设施，按 API 调用付费，无需自己训练',
+      '相比自建模型：用 Bedrock 不需要管 GPU/服务器，立即可用'
+    ],
+    example:'<b>选哪个模型？</b> → 需要长文档？选 Claude 3.5（200K 上下文）；需要便宜？选 Amazon Nova Lite；需要多模态？选 Nova Pro。',
+    aws:'<span class="label">AWS</span>Amazon Bedrock 是 AWS 考试最高频考点之一！',
+    trap:'⚠️ Bedrock ≠ SageMaker：<br>Bedrock = FM 一站式（API 调用预训练模型）<br>SageMaker = 通用 ML 平台（可训练自己的模型）',
+    tip:'Bedrock 是 AWS 的"AI 模型超市"，想用现成大模型就走 Bedrock；想自己训练/部署就走 SageMaker。'
+  },
+  {
+    title:'提示工程：用好 LLM 的关键',
+    kpIds:['KP071','KP074','KP075','KP078'],
+    points:[
+      '提示 (Prompt) = 你发给模型的指令，提示工程 = 设计好指令的学问',
+      '<b>少样本提示</b>：给几个示例让模型照做（提升格式一致性）',
+      '<b>思维链 (CoT)</b>：让模型"一步步思考"再答（提升数学/逻辑推理）',
+      '<b>角色提示</b>：告诉模型"你是 XX 领域的专家"（调整回答风格和深度）',
+      '<b>零样本提示</b>：不举例直接问（简单任务可用）'
+    ],
+    example:'<b>零样本</b>：把这段文字翻译成英文<br><b>少样本</b>：<br>中文→英文示例：<br>· 我爱中国 → I love China<br>· 你好 → Hello<br>请翻译：今天天气真好<br><b>CoT</b>：小明有 5 个苹果，吃了 2 个，又买了 3 个，最后几个？<br>请一步步思考。',
+    aws:'<span class="label">AWS</span>Bedrock 提示管理功能、Prompt flows 编排',
+    trap:'少样本 ≠ 大量样本。给 3-5 个例子效果最好，再多反而干扰。',
+    tip:'提示工程是 LLM 时代最重要的"软技能"，不需要 GPU 就能显著提升效果。'
+  },
+  {
+    title:'检索增强生成 RAG',
+    kpIds:['KP085','KP086','KP087','KP040'],
+    points:[
+      'RAG = Retrieval-Augmented Generation，让 LLM 先查资料再回答',
+      '解决两个核心问题：<b>知识陈旧</b>（模型不知道最新信息）+ <b>幻觉</b>（编造内容）',
+      '工作流：用户提问 → 转成向量 → 向量数据库检索 → 把相关文档塞给 LLM → 生成答案',
+      '三大组件：<b>向量数据库</b>（OpenSearch / Aurora pgvector）+ <b>嵌入模型</b> + <b>知识库</b>',
+      '优势：知识实时更新、引用可追溯、不用重新训练模型'
+    ],
+    example:'<b>客服场景</b>：用户问"退货政策"，模型先检索公司退货政策文档，把相关段落 + 用户问题一起给 LLM，LLM 基于真实文档回答，不会瞎编。',
+    aws:'<span class="label">AWS</span>Bedrock Knowledge Bases 一键搭建 RAG；OpenSearch Service 做向量库',
+    trap:'RAG ≠ 微调。<br>→ 新事实/数据：选 RAG（更新快）<br>→ 改变风格/格式：选微调（改权重）',
+    tip:'考试必考：Bedrock Knowledge Base = 内置 RAG 服务，自动同步 S3 文档并支持检索。'
+  },
+  {
+    title:'微调 Fine-tuning',
+    kpIds:['KP092','KP093','KP094','KP095','KP096'],
+    points:[
+      '微调 = 在已训练模型上继续训练，让它掌握特定领域',
+      '<b>指令微调</b>：用"指令-回答"对训练，让模型更听话（如客服话术）',
+      '<b>持续预训练</b>：用新数据继续训练，让模型学最新领域知识',
+      '<b>RLHF</b>：用人类偏好排序作为奖励信号，让模型输出更符合人类期待',
+      '<b>LoRA/PEFT</b>：只训练少量附加参数就能微调大模型（成本低）',
+      '需要：领域数据集 + 训练算力 + ML 专业知识'
+    ],
+    example:'<b>医疗微调</b>：用 10万条医学问答训练 GPT，让它学会专业诊断术语和推理方式。',
+    aws:'<span class="label">AWS</span>Bedrock Model Customization（微调）、SageMaker JumpStart',
+    trap:'⚠️ 微调 ≠ 提示工程：<br>微调改的是模型权重（永久）；提示工程不改权重（每次重新输入）',
+    tip:'💰 微调贵：训练一次可能 $1000+。RAG 便宜：每月 $100 内就能搞定。优先 RAG！'
+  },
+  {
+    title:'Bedrock 核心功能',
+    kpIds:['KP099','KP100','KP101','KP102'],
+    points:[
+      '<b>Bedrock 代理 (Agents)</b>：让 AI 自动拆解任务、调用工具完成多步操作',
+      '<b>Bedrock 知识库 (Knowledge Base)</b>：内置 RAG，自动同步 S3 文档',
+      '<b>Bedrock 防护栏 (Guardrails)</b>：过滤有害/违规内容（输入和输出两侧都可配）',
+      '<b>模型评估</b>：内置功能，让你对比多个 FM 的表现',
+      '<b>模型调用日志</b>：记录每次 API 调用，用于审计和成本分析'
+    ],
+    example:'<b>代理场景</b>：用户说"我明天要去北京，帮我订机票和酒店" → 代理自动拆成 2 个任务 → 调用航班 API + 酒店 API → 返回结果给用户。',
+    aws:'<span class="label">AWS</span>Bedrock 全部功能都在 AWS 控制台 → Bedrock 服务下',
+    trap:'Bedrock 防护栏 ≠ 模型本身的安全机制。防护栏是独立配置层，可叠加在任何模型上。',
+    tip:'Bedrock 代理 + 知识库 + 防护栏 = AWS 考试三大 Bedrock 高频功能。'
+  },
+  {
+    title:'SageMaker 是什么？',
+    kpIds:['KP111','KP113','KP114','KP122','KP123','KP124'],
+    points:[
+      'SageMaker = AWS 的<b>全托管机器学习平台</b>，从数据准备到部署全流程',
+      '<b>Canvas</b>：无代码建模工具，业务人员点点鼠标就能建模',
+      '<b>JumpStart</b>：预置大量开源模型和示例方案，一键启动',
+      '<b>Ground Truth</b>：数据标注服务（人工 + 主动学习）',
+      '<b>异步推理 / 无服务器推理 / 端点</b>：3 种部署方式，应对不同场景',
+      '<b>批量转换</b>：离线对大数据集做批量预测'
+    ],
+    example:'<b>选哪种推理？</b><br>· 大 payload + 不需即时响应 → 异步推理<br>· 请求量波动大 → 无服务器推理<br>· 实时低延迟 → 端点<br>· 离线大数据集 → 批量转换',
+    aws:'<span class="label">AWS</span>SageMaker 是 ML 平台，区别于 Bedrock 的 FM 平台',
+    trap:'⚠️ Bedrock ≠ SageMaker（再强调一次）：<br>· Bedrock = 调现成大模型 API<br>· SageMaker = 自己训练/部署模型',
+    tip:'记忆口诀：<b>Bedrock 用模型，SageMaker 做模型。</b>'
+  },
+  {
+    title:'SageMaker 治理工具',
+    kpIds:['KP115','KP116','KP117','KP118','KP119','KP120'],
+    points:[
+      '<b>Ground Truth</b>：数据标注（人工 + 自动）',
+      '<b>Clarify</b>：检测偏差 + 提供特征重要性等可解释性',
+      '<b>模型监控器 (Model Monitor)</b>：检测生产环境的模型漂移（数据/质量）',
+      '<b>模型卡片 (Model Card)</b>：标准化记录模型用途/性能/局限性',
+      '<b>模型注册表 (Model Registry)</b>：管理模型版本、审批流、血缘',
+      '<b>特征存储库 (Feature Store)</b>：团队共享和复用 ML 特征'
+    ],
+    example:'<b>模型漂移</b>：训练时用户 25-35 岁占多数，半年后变成 25-45 岁 → 数据分布变了，模型效果会下降。模型监控器会报警。',
+    aws:'<span class="label">AWS</span>SageMaker 全套治理工具，模型上线必备',
+    trap:'Clarify 检测的是<b>偏差（bias）</b>，不是漏洞（vulnerability）。别和 SageMaker 安全配置搞混。',
+    tip:'考试常考场景："模型上线后效果下降怎么办？" → 用 Model Monitor 检测，重新训练。'
+  },
+  {
+    title:'Amazon Q 系列',
+    kpIds:['KP129','KP130','KP131','KP132'],
+    points:[
+      '<b>Q Business</b>：对接企业知识库（Wiki/Confluence/SharePoint），员工提问秒答',
+      '<b>Q Developer</b>：IDE 插件，辅助写代码、做单元测试、写文档（类似 Copilot）',
+      '<b>Q in QuickSight</b>：BI 工具里用自然语言生成图表和报告',
+      '<b>Q Apps</b>：用一句话生成一个轻量应用（基于你的数据）',
+      '全部基于 Bedrock 上的 FM 构建'
+    ],
+    example:'<b>Q Developer</b>：在 VS Code 里写 "写一个 Python 函数判断回文" → 自动生成代码<br><b>Q Business</b>：员工问"年假怎么请" → 检索 HR 文档 → 给答案 + 引用',
+    aws:'<span class="label">AWS</span>Q 系列 = AWS 的 AI 助手全家桶',
+    trap:'⚠️ Q Business ≠ Alexa for Business。前者是 AI 助手，后者是语音助手。',
+    tip:'记忆：Q = "问答"，基本都是"用自然语言完成任务"的助手。'
+  },
+  {
+    title:'负责任的 AI',
+    kpIds:['KP148','KP149','KP150','KP151'],
+    points:[
+      '<b>公平性 (Fairness)</b>：模型对不同人群/性别/地区/年龄无偏见',
+      '<b>可解释性 (Explainability)</b>：能说清模型为什么这么预测',
+      '<b>偏见 (Bias)</b>：训练数据中的历史偏见会被模型学到（如招聘模型歧视女性）',
+      '<b>透明度 (Transparency)</b>：模型的用途、能力、限制公开可见',
+      '工具：<b>SageMaker Clarify</b> 检测偏差；<b>SHAP/PDP</b> 解释模型；<b>模型卡片</b> 文档化',
+      'AWS 负责任 AI 9 大原则：公平、可解释、隐私、安全、可控、可验证、包容、透明、可问责'
+    ],
+    example:'<b>招聘 AI 歧视案例</b>：训练数据来自公司过去 10 年的招聘记录，过去偏好男生 → 模型学会歧视女性简历 → 公平性问题。',
+    aws:'<span class="label">AWS</span>SageMaker Clarify + 模型卡片 + 防护栏',
+    trap:'⚠️ 负责任 AI 不是"功能开关"，是设计原则。考试问"如何减少偏见"时，要从数据/模型/评估三个层面回答。',
+    tip:'一句话：负责任 AI = 让 AI 公平、可解释、透明、安全、有人把关。AWS 考试几乎必考。'
+  },
+  {
+    title:'AWS 安全合规要点',
+    kpIds:['KP133','KP134','KP135','KP140'],
+    points:[
+      '<b>IAM</b>：身份与访问管理，按<b>最小权限</b>授权访问 AWS 资源',
+      '<b>KMS</b>：密钥管理服务，用来加密数据（静态 + 传输）',
+      '<b>PrivateLink</b>：VPC 私有连接 AWS 服务，流量不走公网',
+      '<b>VPC</b>：虚拟私有云，隔离和保护 AWS 资源',
+      '<b>数据驻留</b>：数据必须留在特定地理区域（如欧盟），合规要求',
+      '<b>CloudTrail</b>：记录所有 AWS API 调用，用于审计'
+    ],
+    example:'<b>最小权限</b>：实习生只需要看 S3 某个文件，就只给他 s3:GetObject 对那个 bucket 的权限，不给其他。<br><b>数据驻留</b>：欧盟 GDPR 要求欧盟用户的数据必须存在欧盟的 AWS 区域（如 eu-west-1）。',
+    aws:'<span class="label">AWS</span>安全是 AWS 的根基，每个 AI 服务都依赖这些基础设施',
+    trap:'⚠️ "静态加密"（encryption at rest）≠ "传输加密"（encryption in transit）。考试会考你选哪个。',
+    tip:'记忆口诀：<b>身份用 IAM，加密用 KMS，私有用 PrivateLink/VPC，审计用 CloudTrail。</b>'
+  }
+];
+
+// ============= 应用 =============
+const $ = id => document.getElementById(id);
+const escHtml = s => String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+let KPS = [];
+let LEARN_STEP = 0;
+
+async function load(){
+  try{
+    const r = await fetch('kps.json?t='+Date.now());
+    KPS = await r.json();
+  }catch(e){
+    $('main').innerHTML = '<div class="loading"><div style="font-size:36px">❌</div>加载失败：'+e.message+'</div>';
+    return;
+  }
+
+  const saved = parseInt(localStorage.getItem('kg_learn_step')||'0');
+  LEARN_STEP = isNaN(saved) ? 0 : Math.min(saved, LEARN_PATH.length);
+  renderStep();
+}
+
+function renderStep(){
+  const main = $('main');
+  if(LEARN_STEP >= LEARN_PATH.length){
+    main.innerHTML = `
+      <div class="learn-wrap">
+        <div class="learn-final">
+          <div class="icon">🎉</div>
+          <h2>恭喜！学习路径走完啦</h2>
+          <p>你已经走完整条 <b style="color:var(--accent)">${LEARN_PATH.length}</b> 步学习路径。<br>现在去「刷题」检验学习成果。</p>
+          <a class="btn btn-primary" href="quiz.html">📝 开始刷题</a>
+          <a class="btn btn-secondary" href="#" onclick="resetLearn();return false;">🔄 重新学习</a>
+        </div>
+      </div>`;
+    return;
+  }
+  const step = LEARN_PATH[LEARN_STEP];
+  const total = LEARN_PATH.length;
+  const pct = Math.round((LEARN_STEP / total) * 100);
+
+  main.innerHTML = `
+    <div class="learn-wrap">
+      <div class="learn-progress">
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div class="progress-text">
+          <span>第 <b>${LEARN_STEP+1}</b> / ${total} 步</span>
+          <span>共 <b>${total}</b> 个学习步骤</span>
+        </div>
+      </div>
+
+      <div class="learn-card">
+        <div class="focus-note">本页只做一件事：读懂这一步。看完核心要点就点下一步。</div>
+        <div class="step-badge">STEP ${LEARN_STEP+1} / ${total}</div>
+        <h2>${escHtml(step.title)}
+          ${step.kpIds.map(id=>`<span class="kp-id">${id}</span>`).join('')}
+        </h2>
+
+        <div class="def">${step.kpIds.map(id=>{
+          const k = KPS.find(x=>x.id===id);
+          return k ? escHtml(k.definition) : '';
+        }).filter(Boolean).join('<br>')}</div>
+
+        <div class="section-title">📌 核心要点</div>
+        <ul class="points">
+          ${step.points.map(p=>`<li>${p}</li>`).join('')}
+        </ul>
+
+        ${step.example ? `
+        <div class="section-title">💡 真实场景举例</div>
+        <div class="example-box">${step.example}</div>` : ''}
+
+        ${step.aws ? `
+        <div class="section-title">☁️ 对应的 AWS 服务</div>
+        <div class="aws-box">${step.aws}</div>` : ''}
+
+        ${step.trap ? `
+        <div class="section-title">🪤 易错点</div>
+        <div class="trap-box">${escHtml(step.trap)}</div>` : ''}
+
+        ${step.tip ? `
+        <div class="tip-box">${step.tip}</div>` : ''}
+
+        <div class="learn-nav">
+          <button class="prev" onclick="prevStep()" ${LEARN_STEP===0?'disabled':''}>← 上一步</button>
+          <button class="next" onclick="nextStep()">
+            ${LEARN_STEP===total-1 ? '完成学习 🎉' : '下一步 →'}
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function nextStep(){
+  if(LEARN_STEP < LEARN_PATH.length-1) LEARN_STEP++;
+  else LEARN_STEP = LEARN_PATH.length;
+  localStorage.setItem('kg_learn_step', LEARN_STEP);
+  renderStep();
+}
+function prevStep(){
+  if(LEARN_STEP > 0){ LEARN_STEP--; localStorage.setItem('kg_learn_step', LEARN_STEP); renderStep(); }
+}
+function resetLearn(){
+  if(confirm('确定要重新开始学习吗？')){
+    LEARN_STEP = 0;
+    localStorage.removeItem('kg_learn_step');
+    renderStep();
+  }
+}
+
+// 主题
+const THEME_KEY='kg_theme';
+function applyTheme(t){
+  document.documentElement.dataset.theme=t;
+  $('theme-toggle').textContent = t==='dark'?'☀️':'🌙';
+  localStorage.setItem(THEME_KEY,t);
+}
+$('theme-toggle').onclick=()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+applyTheme(localStorage.getItem(THEME_KEY)||'light');
+
+load();
+</script>
+</body>
+</html>
